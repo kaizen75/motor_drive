@@ -1,17 +1,5 @@
 `timescale 1ns / 1ps
 
-//This verilog code creates an UP/DOWN counter that can be used for center-aligned PWM
-//
-//     /\    /\    /\    /\    /\
-//    /  \  /  \  /  \  /  \  /  \
-//   /    \/    \/    \/    \/    \
-//
-//The WIDTH parameter sets the width of the counter e.g. the value 10 creates a 10-bit-wide counter
-//The code uses the MSB of the counter as a flag to determine if the count direction is UP or DOWN
-//In case the count direction is UP, the counter increments like a normal UP counter.
-//In case the count direction is DOWN (when the MSB==1), the output value is inverted.
-//When RESET (rst_n) is 0, the output value of the counter is reset to 0
-
 module center_aligned_PWM #(parameter WIDTH = 'd9)   //Change the WIDTH parameter to set the counter width
 (
   input wire i_clk,
