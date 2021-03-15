@@ -95,11 +95,11 @@ begin
             if (counter >= COUNTERHIGH)
             begin
                 counter_state = DOWN;
-                counter <= COUNTERHIGH; //Is this one necessary?
+                counter <= COUNTERHIGH;
             end
         end
         
-    DOWN: //At the start of the down count pwm_output_high is high and pwm_output_low is low
+    DOWN:
         begin
             counter <= counter - 1;
             
