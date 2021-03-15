@@ -9,6 +9,9 @@
 //The deadtime delays are different to allow for different charging and discharging times of the switching transistors. Change the variables according to the needs of your transistors.
 //The module implements clamping of the PWM input values so that a minimum and maximum PWM limits are present.
 
+//COMPLIANCE NOTE: SWITCHED POWER CONVERSION CAN CAUSE SEVERE EMC ISSUES! ABIDE BY THE EMC REGULATIONS IN YOUR COUNTRY
+//SAFETY NOTE: SWITCHED POWER CONVERSION CAN DELIVER HAZARDOUS ELECTRICAL ENERGIES. ABIDE BY THE SAFETY REGULATIONS IN YOUR COUNTRY AND KEEP YOURSELF AND OTHERS SAFE!
+
 module center_aligned_PWM #(parameter WIDTH = 'd9)   //Change the WIDTH parameter to set the counter width
 (
   input wire i_clk,
