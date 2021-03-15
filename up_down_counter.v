@@ -6,7 +6,7 @@
 //    /  \  /  \  /  \  /  \  /  \
 //   /    \/    \/    \/    \/    \
 //
-//The WIDTH parameter sets the width of the counter e.g. the value 10 creates a 10-bit-wide counter
+//The WIDTH parameter sets the width of the counter (e.g. the value 10 creates a 10-bit-wide counter)
 //The code uses the MSB of the counter as a flag to determine if the count direction is UP or DOWN
 //In case the count direction is UP, the counter increments like a normal UP counter.
 //In case the count direction is DOWN (when the MSB==1), the output value is inverted.
