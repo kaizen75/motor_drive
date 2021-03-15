@@ -12,12 +12,11 @@
 //In case the count direction is DOWN (when the MSB==1), the output value is inverted.
 //When RESET (rst_n) is 0, the output value of the counter is reset to 0
 
-module center_aligned_PWM #(parameter WIDTH = 'd10)   //Change the WIDTH parameter to set the counter width
+module center_aligned_PWM #(parameter WIDTH = 'd9)   //Change the WIDTH parameter to set the counter width
 (
   input wire i_clk,
   input wire i_reset_n,
-  input [9:0] pwm_input_value,
-  output reg [WIDTH-1:0] value,
+  input [WIDTH-1:0] pwm_input_value,
   output reg pwm_output_high,
   output reg pwm_output_low
 );
@@ -42,10 +41,10 @@ localparam
     ACTIVE      =  'b0,
     NOT_ACTIVE  =  'b1;
     
-  reg [WIDTH:0] counter;
+  reg [WIDTH-1:0] counter;
   reg [1:0] counter_state = RESET;
   reg [1:0] previous_reset_state = ACTIVE;
-  reg [9:0] pwm_setpoint_value = PWMLOWLIMIT;
+  reg [WIDTH-1:0] pwm_setpoint_value = PWMLOWLIMIT;
 
 always @(posedge i_clk)
 begin
@@ -94,7 +93,7 @@ begin
             if (counter >= COUNTERHIGH)
             begin
                 counter_state = DOWN;
-                counter <= COUNTERHIGH;
+                counter <= COUNTERHIGH; //Is this one necessary?
             end
         end
         
