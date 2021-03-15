@@ -1,5 +1,14 @@
 `timescale 1ns / 1ps
 
+//Verilog module for a center-aligned PWM module. The verilog module has undergone basic testing and looks okay, but bugs might remain.
+//Use this code at your own risk and only after careful analysis and/or debugging! About the license: I don't know if I chose the right one. From my standpoint you can do
+//everything with this code as long as it is legal. Commercial use, etc is not limited in any way!
+//
+//WIDTH sets the UP/DOWN counter width. The UP/DOWN counter is used to create the "triangle wave" counting pattern needed for the center aligned PWM.
+//The module support DEADTIME. The deadtime on the falling counter slope is twice the DEADTIME value. The deadtime on the rising counter slope is once the DEADTIME.
+//The deadtime delays are different to allow for different charging and discharging times of the switching transistors. Change the variables according to the needs of your transistors.
+//The module implements clamping of the PWM input values so that a minimum and maximum PWM limits are present.
+
 module center_aligned_PWM #(parameter WIDTH = 'd9)   //Change the WIDTH parameter to set the counter width
 (
   input wire i_clk,
