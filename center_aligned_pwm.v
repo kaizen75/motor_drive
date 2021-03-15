@@ -1,16 +1,18 @@
 `timescale 1ns / 1ps
 
-//Verilog module for a center-aligned PWM module. The verilog module has undergone basic testing and looks okay, but bugs might remain.
-//Use this code at your own risk and only after careful analysis and/or debugging! About the license: I don't know if I chose the right one. From my standpoint you can do
-//everything with this code as long as it is legal. Commercial use, etc is not limited in any way!
+//Verilog module for a center-aligned PWM module. The verilog module has undergone basic testing and looks okay, but bugs might remain!
+//Use this code at your own risk and only after careful analysis and/or debugging!
 //
-//WIDTH sets the UP/DOWN counter width. The UP/DOWN counter is used to create the "triangle wave" counting pattern needed for the center aligned PWM.
-//The module support DEADTIME. The deadtime on the falling counter slope is twice the DEADTIME value. The deadtime on the rising counter slope is once the DEADTIME.
+//About the license: I don't know if I chose the right one. From my standpoint you can do everything with this code as long as it is legal. 
+//Commercial re-use, etc is not limited in any way! This code has been written by me and I am the only originator...
+//
+//WIDTH sets the UP/DOWN counter width. The UP/DOWN counter is used to create the "triangle wave" counting pattern needed for the center-aligned PWM.
+//The module support DEADTIME. The deadtime on the falling counter slope is twice the DEADTIME value set. The deadtime on the rising counter slope is once the DEADTIME value.
 //The deadtime delays are different to allow for different charging and discharging times of the switching transistors. Change the variables according to the needs of your transistors.
-//The module implements clamping of the PWM input values so that a minimum and maximum PWM limits are present.
+//The module implements clamping of the PWM input values so that minimum and maximum PWM limits are present.
 
-//COMPLIANCE NOTE: SWITCHED POWER CONVERSION CAN CAUSE SEVERE EMC ISSUES! ABIDE BY THE EMC REGULATIONS IN YOUR COUNTRY
-//SAFETY NOTE: SWITCHED POWER CONVERSION CAN DELIVER HAZARDOUS ELECTRICAL ENERGIES. ABIDE BY THE SAFETY REGULATIONS IN YOUR COUNTRY AND KEEP YOURSELF AND OTHERS SAFE!
+//COMPLIANCE NOTE: SWITCHED-POWER CONVERSION CAN CAUSE SEVERE EMC ISSUES! ABIDE BY THE EMC REGULATIONS IN YOUR COUNTRY!
+//SAFETY NOTE: SWITCHED-POWER CONVERSION CAN RESULT IN ELECTRICAL HAZARDS! ABIDE BY THE SAFETY REGULATIONS IN YOUR COUNTRY AND KEEP YOURSELF AND OTHERS SAFE!
 
 module center_aligned_PWM #(parameter WIDTH = 'd9)   //Change the WIDTH parameter to set the counter width
 (
@@ -21,7 +23,7 @@ module center_aligned_PWM #(parameter WIDTH = 'd9)   //Change the WIDTH paramete
   output reg pwm_output_low
 );
 
-localparam COUNTERHIGH  =   (('d2 ** WIDTH)-'d1);
+localparam COUNTERHIGH  =   (('d2 ** WIDTH)-'d1); //'d2 ** WIDTH calculates 2^WIDTH. So if WIDTH = 10, 2^10 will be 1024
 localparam COUNTERLOW   =   'd1;
 localparam DEADTIME     =   'd10;     //While upcounting DEADTIME sets the delay in clock cycles(e.g. 10 = 10 clock cycles). While down-counting the delay is 2x DEADTIME (e.g. 10 = 20 clock cycles)    
 localparam PWMLOWLIMIT  =   COUNTERLOW  + 'd30;
