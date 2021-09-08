@@ -11,10 +11,10 @@
 //The deadtime delays are different to allow for different charging and discharging times of the switching transistors. Change the variables according to the needs of your transistors.
 //The module implements clamping of the PWM input values so that minimum and maximum PWM limits are present.
 
-//COMPLIANCE NOTE: SWITCHED-POWER CONVERSION CAN CAUSE SEVERE EMC ISSUES! ABIDE BY THE EMC REGULATIONS IN YOUR COUNTRY!
-//SAFETY NOTE: SWITCHED-POWER CONVERSION CAN RESULT IN ELECTRICAL HAZARDS! ABIDE BY THE SAFETY REGULATIONS IN YOUR COUNTRY AND KEEP YOURSELF AND OTHERS SAFE!
+//COMPLIANCE NOTE: SWITCHED-POWER CONVERSION CAN CAUSE SEVERE EMC ISSUES!
+//SAFETY NOTE: SWITCHED-POWER CONVERSION CAN RESULT IN ELECTRICAL HAZARDS!
 
-module center_aligned_PWM #(parameter WIDTH = 'd9)   //Change the WIDTH parameter to set the counter width
+module center_aligned_PWM #(parameter WIDTH = 'd16)   //Change the WIDTH parameter to set the counter width
 (
   input wire i_clk,
   input wire i_reset_n,
@@ -30,16 +30,16 @@ localparam PWMLOWLIMIT  =   COUNTERLOW  + 'd30;
 localparam PWMHIGHLIMIT =   COUNTERHIGH - 'd30;
 
 localparam
+//BOOLEAN DEFINITIONS
+    LOW         =  'b0,
+    HIGH        =  'b1,
+
 //STATE MACHINE VARIABLES BELOW
     RESET       = 2'b00,
     UP          = 2'b01,
     DOWN        = 2'b10,
     
-//BOOLEAN DEFINITIONS
-    LOW         =  'b0,
-    HIGH        =  'b1,
-    
-//RESET DEFINITIONS
+//RESET STATE DEFINITIONS
     ACTIVE      =  'b0,
     NOT_ACTIVE  =  'b1;
     
@@ -47,6 +47,7 @@ localparam
   reg [1:0] counter_state = RESET;
   reg [1:0] previous_reset_state = ACTIVE;
   reg [WIDTH-1:0] pwm_setpoint_value = PWMLOWLIMIT;
+
 
 always @(posedge i_clk)
 begin
@@ -63,7 +64,6 @@ begin
         begin
             counter_state = UP;
             pwm_output_low = LOW;
-            pwm_output_high = LOW;
             previous_reset_state = NOT_ACTIVE;
         end
         
@@ -82,14 +82,22 @@ begin
         begin
             counter <= counter + 1;
             
-            if (counter > pwm_setpoint_value - DEADTIME)
+            if (counter < pwm_setpoint_value - DEADTIME)
             begin
                 pwm_output_low = LOW;
+                pwm_output_high = HIGH;
             end
             
-            if (counter > pwm_setpoint_value)
+            if((counter >= pwm_setpoint_value - DEADTIME) && (counter < pwm_setpoint_value))
             begin
-                pwm_output_high <= HIGH;
+                pwm_output_low = LOW;
+                pwm_output_high = LOW;
+            end
+            
+            if (counter >= pwm_setpoint_value)
+            begin
+                pwm_output_low <= HIGH;
+                pwm_output_high <= LOW;
             end
             
             if (counter >= COUNTERHIGH)
@@ -103,14 +111,22 @@ begin
         begin
             counter <= counter - 1;
             
-            if (counter < pwm_setpoint_value  + (2 * DEADTIME))
+            if (counter > pwm_setpoint_value + 2 * DEADTIME)
             begin
+                pwm_output_low <= HIGH;
+                pwm_output_high <= LOW;
+            end
+            
+            if((counter <= pwm_setpoint_value + 2 * DEADTIME) && (counter > pwm_setpoint_value))
+            begin
+                pwm_output_low = LOW;
                 pwm_output_high = LOW;
             end
             
-            if (counter < pwm_setpoint_value)
+            if (counter <= pwm_setpoint_value)
             begin
-                pwm_output_low <= HIGH;
+                pwm_output_low = LOW;
+                pwm_output_high = HIGH;
             end
             
             if (counter <= COUNTERLOW)
