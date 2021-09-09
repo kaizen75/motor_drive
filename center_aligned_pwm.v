@@ -14,7 +14,7 @@
 //COMPLIANCE NOTE: SWITCHED-POWER CONVERSION CAN CAUSE SEVERE EMC ISSUES!
 //SAFETY NOTE: SWITCHED-POWER CONVERSION CAN RESULT IN ELECTRICAL HAZARDS!
 
-module center_aligned_PWM #(parameter WIDTH = 'd16)   //Change the WIDTH parameter to set the counter width
+module center_aligned_PWM #(parameter WIDTH = 'd12)   //Change the WIDTH parameter to set the counter width
 (
   input wire i_clk,
   input wire i_reset_n,
@@ -25,7 +25,7 @@ module center_aligned_PWM #(parameter WIDTH = 'd16)   //Change the WIDTH paramet
 
 localparam COUNTERHIGH  =   (('d2 ** WIDTH)-'d1); //'d2 ** WIDTH calculates 2^WIDTH. So if WIDTH = 10, 2^10 will be 1024
 localparam COUNTERLOW   =   'd1;
-localparam DEADTIME     =   'd10;     //While upcounting DEADTIME sets the delay in clock cycles(e.g. 10 = 10 clock cycles). While down-counting the delay is 2x DEADTIME (e.g. 10 = 20 clock cycles)    
+localparam DEADTIME     =   'd30;     //While upcounting DEADTIME sets the delay in clock cycles(e.g. 10 = 10 clock cycles). While down-counting the delay is 2x DEADTIME (e.g. 10 = 20 clock cycles)    
 localparam PWMLOWLIMIT  =   COUNTERLOW  + 'd30;
 localparam PWMHIGHLIMIT =   COUNTERHIGH - 'd30;
 
@@ -111,13 +111,13 @@ begin
         begin
             counter <= counter - 1;
             
-            if (counter > pwm_setpoint_value + 2 * DEADTIME)
+            if (counter > pwm_setpoint_value + DEADTIME)
             begin
                 pwm_output_low <= HIGH;
                 pwm_output_high <= LOW;
             end
             
-            if((counter <= pwm_setpoint_value + 2 * DEADTIME) && (counter > pwm_setpoint_value))
+            if((counter <= pwm_setpoint_value + DEADTIME) && (counter > pwm_setpoint_value))
             begin
                 pwm_output_low = LOW;
                 pwm_output_high = LOW;
